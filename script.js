@@ -1,22 +1,24 @@
 const app = new PIXI.Application();
-await app.init();
+await app.init({width: window.innerWidth, height: window.innerHeight})
 document.body.appendChild(app.canvas);
 
+function getJSON(path) {
+  var xhr = new XMLHttpRequest();
+  
+  xhr.open("GET", path, false);
+  xhr.send();
 
-// load the PNG asynchronously
-const texture = await PIXI.Assets.load('sprites/sample.jpg');
-let sprite = PIXI.Sprite.from(texture);
+  if(xhr.status === 200) {
+    let data = JSON.parse(xhr.responseText);
+    return data;
+  }
+}
 
+let parameters = {
+  aBlockDims: [32, 32, 51],
+  aScreenDims: [window.innerWidth, window.innerHeight],
+  fScalingFactor: 3,
+  fCameraAngle: 45 * (Math.PI / 180)
+}
 
-app.stage.addChild(sprite);
-
-// Add a ticker callback to move the sprite back and forth
-
-/*
-let elapsed = 10.0;
-app.ticker.add((ticker) => {
-  elapsed += ticker.deltaTime;
-  sprite.x = 100.0 + Math.cos(elapsed/50.0) * 100.0;
-});
-
-*/
+export {getJSON, parameters, app}
